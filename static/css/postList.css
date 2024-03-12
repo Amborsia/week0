@@ -1,0 +1,30 @@
+.swiper-container {
+  width: 100%;
+  height: 60vh;
+  margin: 0 auto;
+}
+
+.swiper-slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-pagination {
+  position: static;
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.add-icon {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 24px;
+  color: white;
+  background: #27b347;
+  border-radius: 50%;
+  padding: 15px;
+}

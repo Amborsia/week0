@@ -11,6 +11,11 @@ body {
 
 main {
   flex: 1;
+  overflow-x: hidden;
+}
+
+a {
+  color: #27b347 !important;
 }
 
 #logo {
@@ -31,5 +36,3 @@ main {
     margin-left: 220px;
   }
 }
-
-/* form css */
