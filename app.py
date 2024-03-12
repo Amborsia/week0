@@ -42,9 +42,9 @@ def mypage():
     return render_template('mypage.html')
 @app.route('/api/login', methods=['POST'])
 def api_login():
-    
-    id_receive = request.form['id_give']
-    pw_receive = request.form['pw_give']
+    data = request.get_json()
+    id_receive = data.get('id_give')
+    pw_receive = data.get('pw_give')
     #입력된 비밀번호를 바이트 코드로 변환
     pw_value = pw_receive.encode('UTF-8')
     # id, 암호화된 pw를 가지고 해당 유저를 찾음
