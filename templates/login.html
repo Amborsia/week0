@@ -18,7 +18,7 @@
     </div>
 
     <div class="w-full mx-auto">
-        <form action="/login" method="POST" class="pt-6 pb-8 mb-4 space-y-6">
+        <form id="login-form" action="/login" method="POST" class="pt-6 pb-8 mb-4 space-y-6">
             <div class="relative">
                 <input type="text" id="username" name="username" placeholder=" "
                     class="form-input w-full py-2 border-b border-gray-300 text-gray-700 focus:outline-none focus:border-blue-500 peer">
@@ -46,4 +46,5 @@
         <a href="/register">회원가입</a>
     </div>
 </div>
+<script src="../static/js/login.js"></script>
 {% endblock %}
