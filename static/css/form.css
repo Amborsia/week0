@@ -1,0 +1,21 @@
+/* .form-input {
+  transition: all 0.3s ease;
+  padding-top: 3rem;
+} */
+
+.form-label {
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.peer:focus ~ .form-label,
+.peer:not(:placeholder-shown) ~ .form-label {
+  top: -1.2rem;
+  font-size: 0.9rem;
+  color: #3b82f6;
+}
+
+.peer:placeholder-shown ~ .form-label {
+  top: 1rem;
+  font-size: 1rem;
+}

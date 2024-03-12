@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block stylesheets %}
+{{ super() }} <!-- 이 부분은 base.html에서 정의한 기본 스타일을 유지합니다 -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}"> <!-- 여기에 추가 스타일시트를 넣습니다 -->
+{% endblock %}
+
+{% block content %}
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="file" name="image">
+    <input type="submit" value="Upload">
+</form>
+{% endblock %}
