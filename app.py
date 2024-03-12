@@ -1,42 +1,3 @@
-# from pymongo import MongoClient
-# import certifi
-# ca = certifi.where()
-# client = MongoClient('mongodb+srv://ghdrms1220:test@cluster0.u8jwhhi.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=ca)
-# db = client.dbjungle
-# from flask import Flask, render_template, jsonify, request
-# app = Flask(__name__)
-# @app.route('/')
-# def home():
-#     return render_template('index.html')
-# # 로그인 html
-# @app.route('/login')
-# def login():
-#     return render_template('login.html')
-# @app.route('/register')
-# def register():
-#     return render_template('signup.html')
-# @app.route('/posts')
-# def main():
-#     # 몽고디비한테 요청해서 posts 라는 변수를 가져오겠죠
-#     # posts = db.posts.find({})
-#     posts = [
-#         {'title': '첫 번째 게시글', 'image_url': 'https://images.unsplash.com/photo-1708748513828-2227f6d39c04?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 'content': '일반사면을 명하려면 국회의 동의를 얻어야 한다. 혼인과 가족생활은 개인의 존엄과 양성의 평등을 기초로 성립되고 유지되면서도 국가는 보장한다.'},
-#         {'title': '두 번째 게시글', 'image_url': 'https://images.unsplash.com/photo-1707667786496-697ebfd08979?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 'content': '두 번째 게시글 내용...'},
-#         {'title': '세 번째 게시글', 'image_url': 'https://images.unsplash.com/photo-1707343843437-caacff5cfa74?q=80&w=1675&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 'content': '세 번째 게시글 내용...'},
-#     ]
-#     return render_template('postList.html', posts=posts)
-
-
-# @app.route('/myposts')
-# def myPosts():
-#     return render_template('myPosts.html')
-# @app.route('/mypage')
-# def mypage():
-#     return render_template('mypage.html')
-
-# if __name__ == '__main__':
-#     app.run('0.0.0.0', port=5000, debug=True)
-
 
 from pymongo import MongoClient
 import certifi
@@ -44,10 +5,11 @@ import hashlib
 import jwt
 import datetime
 import bcrypt
+from flask import Flask, render_template, jsonify, request
 ca = certifi.where()
 client = MongoClient('mongodb+srv://ghdrms1220:test@cluster0.u8jwhhi.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=ca)
 db = client.dbjungle
-from flask import Flask, render_template, jsonify, request
+
 app = Flask(__name__)
 SECRET_KEY = 'SWAPJUNGLE'
 # 이미지 올릴 때 가능한 포맷형태
@@ -80,6 +42,7 @@ def mypage():
     return render_template('mypage.html')
 @app.route('/api/login', methods=['POST'])
 def api_login():
+    
     id_receive = request.form['id_give']
     pw_receive = request.form['pw_give']
     #입력된 비밀번호를 바이트 코드로 변환
@@ -107,9 +70,11 @@ def api_login():
 # 회원가입
 @app.route('/api/signup', methods=['POST'])
 def api_register():
-    id_receive = request.form['id_give']
-    number_receive = request.form['num_give']
-    pw_receive = request.form['pw_give']
+    data = request.get_json()
+    id_receive = data.get('id_give')
+    print(id_receive)
+    number_receive = data.get('num_give')
+    pw_receive = data.get('pw_give')
     pw_plain = pw_receive.encode('UTF-8')
     # 기존 저장된 값을 연산을 위해서 hex에서 바이트로 변환시켜서 DB에 저장하게됨
     pw_text = bcrypt.hashpw(pw_plain, bcrypt.gensalt()).hex()

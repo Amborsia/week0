@@ -20,11 +20,11 @@ document.addEventListener('DOMContentLoaded', function () {
     event.preventDefault()
 
     const username = document.getElementById('username').value
-    const email = document.getElementById('phone').value
+    const phone = document.getElementById('phone').value
     const password = document.getElementById('password').value
     const confirmPassword = document.getElementById('confirm_password').value
 
-    // 비밀번호 일치 여부  -> 이후 프론트에서 암호화해줄지 고민 필요
+    // 비밀번호 일치 여부 검사
     if (password !== confirmPassword) {
       Swal.fire({
         title: 'ERROR',
@@ -33,11 +33,36 @@ document.addEventListener('DOMContentLoaded', function () {
         confirmButtonText: '다시 시도'
       })
     } else {
-      console.log('Username:', username)
-      console.log('Email:', email)
-      console.log('Password:', password)
-      console.log('Confirm Password:', confirmPassword)
-      //   form.submit() // 폼 제출을 진행하려면 이 주석을 해제하세요.
+      // AJAX 사용하여 서버에 데이터 전송
+      $.ajax({
+        url: 'api/signup',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          id_give: username,
+          num_give: phone,
+          pw_give: password
+        }),
+        success: function (data) {
+          console.log('Success:', data)
+          Swal.fire({
+            title: 'Success',
+            text: '회원가입이 완료되었습니다.',
+            icon: 'success',
+            confirmButtonText: '확인'
+          })
+          // 로그인 페이지로 리다이렉션
+        },
+        error: function (error) {
+          console.error('Error:', error)
+          Swal.fire({
+            title: 'Error',
+            text: '회원가입 중 오류가 발생했습니다.',
+            icon: 'error',
+            confirmButtonText: '다시 시도'
+          })
+        }
+      })
     }
   })
 })
