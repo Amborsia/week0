@@ -65,6 +65,7 @@ def api_login():
         # token을 줘야함
         return jsonify({'result' : 'success', 'token' : token})
     else:
+        # error 보내기
         return jsonify({'result' : 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
 # 회원가입
