@@ -24,3 +24,4 @@ def write():
 @app.route('/mypage')
 def mypage():
     return render_template('mypage.html')
+3:27
