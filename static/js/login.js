@@ -16,8 +16,16 @@ document.addEventListener('DOMContentLoaded', function () {
       }),
       success: function (data) {
         console.log('Success:', data)
+        if (data.result === 'fail') {
+          Swal.fire({
+            title: 'Error',
+            text: '아이디 또는 비밀번호가 일치하지 않습니다.',
+            icon: 'error',
+            confirmButtonText: '다시 시도'
+          })
+          return
+        }
         // cookie에 저장
-
         Swal.fire({
           title: 'Success',
           text: '로그인 완료되었습니다.',
