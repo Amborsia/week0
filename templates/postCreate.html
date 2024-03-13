@@ -4,7 +4,7 @@
 
 {% block stylesheets %}
 {{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/createPost.css') }}"> <!-- 여기에 추가 스타일시트를 넣습니다 -->
+<link rel="stylesheet" href="../static/css/createPost.css">
 {% endblock %}
 
 {% block content %}
@@ -16,8 +16,8 @@
     <button>올리기</button>
 </div>
 <div class="flex items-center max-h-screen flex-col">
-    <form id="upload-form" action="http://127.0.0.1:5000/write" method="post" enctype="multipart/form-data"
-        class="w-full mx-auto"> <!-- max-w-sm and mx-auto classes added -->
+    <form id="upload-form" action="/write" method="post" enctype="multipart/form-data" class="w-full mx-auto"
+        class="w-full mx-auto">
         <label id="image-upload-container"
             style="cursor: pointer; border: 2px dashed #ccc; height: 350px; width: 350px; display: block; margin: auto; align-items: center; justify-content: center; position: relative; background-size: cover; background-position: center;">
             <input type="file" name="savefile" id="image-input" style="display: none;" onchange="previewImage();">
@@ -74,11 +74,11 @@
             reader.readAsDataURL(file);
         } else {
             $('#image-upload-container').css({
-                'background-image': '', // Reset background image
-                'border': '2px dashed #ccc' // Reset the border to original style when no image is selected
+                'background-image': '',
+                'border': '2px dashed #ccc'
             });
-            $('#image-upload-container .fa-image').show(); // Show the upload icon again
-            $('#image-tip').hide(); // Hide the tip when no image is selected
+            $('#image-upload-container .fa-image').show();
+            $('#image-tip').hide();
         }
     }
 
