@@ -84,9 +84,18 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
+                    if (response.result !== 'success') {
+                        Swal.fire({
+                            title: '에러!',
+                            text: '에러가 발생했습니다. <br/>다시 시도해주세요.',
+                            icon: 'error',
+                            confirmButtonText: '다시 시도'
+                        });
+                        return;
+                    }
                     Swal.fire({
                         title: 'Success',
-                        text: 'The file has been uploaded successfully',
+                        text: '성공적으로 수정하였습니다!',
                         icon: 'success',
                         confirmButtonText: '확인'
                     }).then((result) => {
@@ -97,8 +106,8 @@
                 },
                 error: function (error) {
                     Swal.fire({
-                        title: 'Error',
-                        text: 'An error occurred during the upload',
+                        title: '에러!',
+                        text: '에러가 발생했습니다. 다시 시도해주세요.',
                         icon: 'error',
                         confirmButtonText: '다시 시도'
                     });

@@ -19,6 +19,29 @@
         opacity: 0.6;
     }
 
+    .empty-post-container {
+        background-color: white;
+
+        border-radius: 20px;
+
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+        margin-top: 50px;
+
+        margin-bottom: 50px;
+
+    }
+
+    .empty-post-container a {
+        display: inline-block;
+        background-image: linear-gradient(45deg, rgb(55, 178, 28), #41c441);
+        padding: 10px 30px;
+        color: white !important;
+        border-radius: 30px;
+        box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
     .post-status {
         position: absolute;
         top: 0;
@@ -89,6 +112,7 @@
     </a>
 </div>
 <div class="w-full mx-auto relative px-2">
+    {% if posts %}
     <div>
         {% for post in posts %}
         <div class="post-container relative flex bg-white rounded-lg overflow-hidden shadow-md my-4 {{ 'inactive' if post.status == False }}"
@@ -113,7 +137,18 @@
             <div class="post-status">마감됨</div>
             {% endif %}
         </div>
+
         {% endfor %}
+        {% else %}
+        <div class="empty-post-container text-center py-10 mx-4 md:mx-10 lg:mx-20 xl:mx-40">
+            <h3 class="text-xl md:text-2xl lg:text-3xl text-gray-800 font-semibold mb-4">작성한 글이 없습니다.</h3>
+            <a href="/posts/create"
+                class="inline-flex items-center justify-center text-white font-bold py-2 px-4 rounded transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg">
+                <i class="fa-solid fa-pen mr-2"></i>글 작성하러 가기
+            </a>
+        </div>
+        {% endif %}
+
 
     </div>
 </div>
@@ -124,18 +159,15 @@
         $('.inactive .edit-button, .inactive .complete-button').click(function (event) {
             event.preventDefault();
             event.stopPropagation();
-            console.log('This post is already completed.');
+            Swal.fire('이미 완료된 포스트입니다.', '', 'info');
         });
 
         $('.edit-button').click(function () {
-            // 이 코드는 수정 버튼이 비활성화된 포스트에서 클릭되었는지 확인합니다.
             if ($(this).closest('.post-container').hasClass('inactive')) {
-                console.log('This post is already completed.');
-                return; // 이 경우, 함수의 실행을 멈춥니다.
+                Swal.fire('이미 완료된 포스트입니다.', '', 'info');
+                return;
             }
-            // 포스트의 고유 날짜를 가져옵니다.
             let postDate = $(this).attr('id');
-            // 사용자를 /edit/{postDate}로 리디렉션합니다.
             window.location.href = `/edit/${postDate}`;
         });
 
@@ -148,17 +180,26 @@
                 type: 'POST',
                 url: `/posts/complete`,
                 contentType: 'application/json',
-                data: JSON.stringify({
-                    date: date
-                }),
+                data: JSON.stringify({ date: date }),
                 processData: false,
                 success: function (response) {
                     if (response['result'] == 'success') {
-                        window.location.reload();
+                        Swal.fire({
+                            title: '성공!',
+                            text: '포스트가 성공적으로 완료되었습니다.',
+                            icon: 'success',
+                            confirmButtonText: '확인'
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        Swal.fire('오류', '처리 중 문제가 발생했습니다.', 'error');
                     }
                 },
                 error: function (error) {
-                    console.log('Error:', error);
+                    Swal.fire('오류', '포스트 완료 중 문제가 발생했습니다.', 'error');
                 }
             });
         });

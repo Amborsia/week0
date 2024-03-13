@@ -23,11 +23,11 @@
                 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
         </label>
         <div class="px-4">
-            <div id="image-tip" class="my-4" style="text-align: center; display: none;">
-                <span class="text-sm"
-                    style="font-size: 14px; color: #f2f2f2; display: inline-block; background-color: #46cd65; padding: 8px; border-radius: 8px;">
+            <div id="image-tip" class="my-4 w-full" style="text-align: center; display: none;">
+                <div
+                    style="font-size: 16px; color: #f2f2f2; display: inline-block; background-color: #46cd65; padding: 8px; border-radius: 8px;">
                     <strong>Tip:</strong> 사진은 정사각형을 권장해요! <br /> 최대한 물체가 가운데오게 사진을 올려주세요.
-                </span>
+                </div>
             </div>
         </div>
 
@@ -91,8 +91,7 @@
         $('#upload-form').submit(function (e) {
             e.preventDefault();
             var file = $('#image-input').prop('files')[0];
-
-            // 이미지 파일이 없으면 alert를 표시하고 함수 실행을 종료합니다.
+            // 이미지 파일이 없으면 alert를 표시하고 종료.
             if (!file) {
                 Swal.fire({
                     icon: 'error',
@@ -111,9 +110,18 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
+                    if (response.result !== 'success') {
+                        Swal.fire({
+                            title: '에러!',
+                            text: '에러가 발생했습니다. 다시 시도해주세요.',
+                            icon: 'error',
+                            confirmButtonText: '다시 시도'
+                        });
+                        return;
+                    }
                     Swal.fire({
-                        title: 'Success',
-                        text: 'The file has been uploaded successfully',
+                        title: '업로드 완료 !',
+                        text: '파일이 성공적으로 업로드되었습니다!',
                         icon: 'success',
                         confirmButtonText: '확인'
                     }).then((result) => {

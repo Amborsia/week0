@@ -75,3 +75,13 @@
     width: calc(100% - 40px);
   }
 } */
+#image-tip {
+  display: block; /* Changed from none */
+  text-align: center;
+  font-size: 14px;
+  color: #f2f2f2;
+  background-color: #46cd65;
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
