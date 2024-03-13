@@ -7,12 +7,11 @@
 {% endblock %}
 
 {% block content %}
-<div class="w-full border-b-2 px-2 py-3 flex justify-between">
-    <div class="flex items-center gap-2">
-        <a href="/posts" class="inline-block"><i class="fa-solid fa-angle-left"></i></a>
-        <h2>글 작성</h2>
+<div class="w-full border-b-2 px-2 py-5 flex justify-between rounded-b-lg border-b-2 border-green-400">
+    <div class="flex items-center gap-2 text-xl px-4">
+        <a href="/posts" class="inline-block mr-2"><i class="fa-solid fa-angle-left"></i></a>
+        <h2>글 작성하기</h2>
     </div>
-    <button>올리기</button>
 </div>
 <div class="flex items-center max-h-screen flex-col">
     <form id="upload-form" action="/write" method="post" enctype="multipart/form-data" class="w-full mx-auto"
@@ -27,7 +26,7 @@
             <div id="image-tip" class="my-4" style="text-align: center; display: none;">
                 <span class="text-sm"
                     style="font-size: 14px; color: #f2f2f2; display: inline-block; background-color: #46cd65; padding: 8px; border-radius: 8px;">
-                    <strong>Tip:</strong> 사진이 정사각형이면 좋아요! 아니라면 물체가 가운데오게끔 사진을 올려주세요.
+                    <strong>Tip:</strong> 사진은 정사각형을 권장해요! <br /> 최대한 물체가 가운데오게 사진을 올려주세요.
                 </span>
             </div>
         </div>
@@ -48,22 +47,21 @@
                     설명을 덧붙여주세요 (85자 제한)</label>
             </div>
         </div>
-        <div style="text-align: center; margin-top: 20px;">
-            <button type="submit"
-                class="bg-green-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                업로드</button>
+        <div class="text-center mt-2 w-full px-5">
+            <button type="submit" class="w-full 
+                bg-gradient-to-r from-green-400 to-green-500
+                text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                업로드
+            </button>
         </div>
 
     </form>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-
     function checkForPreloadedImage() {
-        // Check if there is a preloaded image
         var backgroundImage = $('#image-upload-container').css('background-image');
         if (backgroundImage !== 'none') {
-            // Show the tip if there is a background image
             $('#image-tip').show();
             $('#image-upload-container .fa-image').hide();
         }
@@ -92,6 +90,19 @@
 
         $('#upload-form').submit(function (e) {
             e.preventDefault();
+            var file = $('#image-input').prop('files')[0];
+
+            // 이미지 파일이 없으면 alert를 표시하고 함수 실행을 종료합니다.
+            if (!file) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '이미지 없음',
+                    text: '이미지를 넣어야 합니다!',
+                    confirmButtonText: '확인'
+                });
+                return; // 함수 실행 종료
+            }
+
             var formData = new FormData(this);
             $.ajax({
                 url: $(this).attr('action'),
@@ -100,13 +111,29 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    Swal.fire('Success', 'The file has been uploaded successfully', 'success');
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'The file has been uploaded successfully',
+                        icon: 'success',
+                        confirmButtonText: '확인'
+                    }).then((result) => {
+                        if (result.value) {
+                            window.location.href = '/posts';
+                        }
+                    });
                 },
                 error: function (error) {
-                    Swal.fire('Error', 'An error occurred during the upload', 'error');
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'An error occurred during the upload',
+                        icon: 'error',
+                        confirmButtonText: '다시 시도'
+                    });
                 }
             });
         });
     });
 </script>
+
+
 {% endblock %}

@@ -1,6 +1,8 @@
 .swiper-container {
-  width: 100%;
-  height: 60vh;
+  overflow-x: hidden;
+  padding: 0px 10px;
+  width: 92%;
+  height: auto;
   margin: 0 auto;
 }
 
@@ -9,6 +11,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  overflow-x: hidden;
+  max-height: 540px;
   padding-bottom: 0px;
 }
 
@@ -16,22 +20,6 @@
   position: static;
   width: 100%;
   text-align: center;
-  margin-top: 2px;
-}
-
-.add-icon {
-  position: fixed;
-  bottom: 10px;
-  width: 60px;
-  height: 60px;
-  font-size: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #27b347;
-  color: white;
-  border-radius: 50%;
-  padding: 15px;
 }
 
 .description {
@@ -51,7 +39,7 @@
 
 @media (min-height: 700px) {
   .swiper-container {
-    height: 65vh;
+    height: auto;
   }
 
   .swiper-slide {

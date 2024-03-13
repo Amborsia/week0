@@ -82,16 +82,18 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8 relative border-2">
-    <a href="/posts"
-        class="fixed top-0 w-full h-16 left-0 px-4 text-gray-700 bg-white text-xl font-semibold flex items-center border-b-2 border-green-400 rounded-b-md shadow-md">
+<div class="w-full py-3 px-2 flex justify-between ">
+    <a href="/posts" style="max-width: 592px;"
+        class="w-full h-16 px-4 text-gray-700 bg-white text-xl font-semibold flex items-center border-b-2 border-green-400 rounded-b-md shadow-md">
         <i class="fa-solid fa-angle-left mr-2"></i> 내 글 목록
     </a>
-    <div class="mt-5 py-4">
+</div>
+<div class="w-full mx-auto relative px-2">
+    <div>
         {% for post in posts %}
-        <div class="post-container relative flex bg-white rounded-lg overflow-hidden shadow-lg my-4 {{ 'inactive' if not post.status }}"
+        <div class="post-container relative flex bg-white rounded-lg overflow-hidden shadow-md my-4 {{ 'inactive' if post.status == False }}"
             id="{{ post.post_id }}">
-            <div class="post-image w-32 h-32 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden"
+            <div class="post-image w-32 h-32 flex-none bg-cover bg-center rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden"
                 style="background-image: url('{{ post.image_url }}');" title="{{ post.title }}"></div>
             <div class="post-body flex flex-col justify-between p-4 leading-normal">
                 <div>
@@ -99,7 +101,7 @@
                     <p class="post-date text-gray-600 text-xs">{{ post.date }}</p>
                 </div>
                 <div class="post-actions mt-4 flex items-center">
-                    <button class="edit-button bg-blue-500 text-white font-bold py-1 px-4 rounded-l">
+                    <button id="{{post.date}}" class="edit-button bg-blue-500 text-white font-bold py-1 px-4 rounded-l">
                         수정
                     </button>
                     <button class="complete-button bg-green-500 text-white font-bold py-1 px-4 rounded-r">
@@ -119,17 +121,26 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        // 마감 처리된 포스트의 버튼 클릭 이벤트 처리
         $('.inactive .edit-button, .inactive .complete-button').click(function (event) {
-            event.preventDefault(); // 기본 동작 방지
-            event.stopPropagation(); // 이벤트 전파 방지
-            // 여기에 마감된 포스트에 대한 피드백을 사용자에게 제공할 수 있습니다.
+            event.preventDefault();
+            event.stopPropagation();
             console.log('This post is already completed.');
+        });
+
+        $('.edit-button').click(function () {
+            // 이 코드는 수정 버튼이 비활성화된 포스트에서 클릭되었는지 확인합니다.
+            if ($(this).closest('.post-container').hasClass('inactive')) {
+                console.log('This post is already completed.');
+                return; // 이 경우, 함수의 실행을 멈춥니다.
+            }
+            // 포스트의 고유 날짜를 가져옵니다.
+            let postDate = $(this).attr('id');
+            // 사용자를 /edit/{postDate}로 리디렉션합니다.
+            window.location.href = `/edit/${postDate}`;
         });
 
         $('.complete-button').click(function () {
             if ($(this).closest('.post-container').hasClass('inactive')) {
-                // 포스트가 이미 마감된 경우, 클릭 이벤트를 무시합니다.
                 return;
             }
             let date = $(this).closest('.post-container').find('.post-date').text();
@@ -143,7 +154,6 @@
                 processData: false,
                 success: function (response) {
                     if (response['result'] == 'success') {
-                        // 포스트 상태 업데이트 or 페이지 새로고침 등의 처리
                         window.location.reload();
                     }
                 },
