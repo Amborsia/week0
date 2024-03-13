@@ -26,6 +26,10 @@ def login():
 @app.route('/register')
 def register():
     return render_template('signup.html')
+#test
+@app.route('/test')
+def test():
+    return render_template('test.html')
 @app.route('/posts')
 def main():
     posts = [
@@ -34,9 +38,9 @@ def main():
         {'title': '세 번째 게시글', 'image_url': 'https://images.unsplash.com/photo-1707343843437-caacff5cfa74?q=80&w=1675&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', 'content': '세 번째 게시글 내용...'},
     ]
     return render_template('postList.html', posts=posts)
-@app.route('/write')
+@app.route('/posts/create')
 def write():
-    return render_template('write.html')
+    return render_template('postCreate.html')
 @app.route('/myposts')
 def mypage():
     return render_template('mypage.html')

@@ -9,22 +9,79 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding-bottom: 0px;
 }
 
 .swiper-pagination {
   position: static;
   width: 100%;
   text-align: center;
-  margin-top: 10px;
+  margin-top: 2px;
 }
 
 .add-icon {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  font-size: 24px;
+  position: fixed;
+  bottom: 10px;
+  width: 60px;
+  height: 60px;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #27b347;
   color: white;
-  background: #27b347;
   border-radius: 50%;
   padding: 15px;
+}
+
+.description {
+  font-size: 14px;
+  height: 80px;
+  border: 1px solid #e1e2e4;
+  margin-top: 5px;
+}
+
+.card-image {
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  min-height: 224px;
+  height: 224px;
+}
+
+@media (min-height: 700px) {
+  .swiper-container {
+    height: 65vh;
+  }
+
+  .swiper-slide {
+    gap: 20px;
+    padding-bottom: 4px;
+  }
+
+  .card-image {
+    height: 350px;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .add-icon {
+    position: fixed;
+    bottom: 4%;
+    width: 67px;
+    height: 67px;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #27b347;
+    color: white;
+    border-radius: 50%;
+    padding: 10px;
+  }
+
+  .description {
+    font-size: 16px;
+    height: 110px;
+  }
 }
