@@ -26,10 +26,15 @@ def login():
 @app.route('/register')
 def register():
     return render_template('signup.html')
-#test
+
 @app.route('/test')
 def test():
     return render_template('test.html')
+
+@app.route('/my-posts')
+def my_posts():
+    return render_template('myPosts.html')
+
 @app.route('/posts')
 def main():
     posts = [
