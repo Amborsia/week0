@@ -1,3 +1,27 @@
+#image-upload-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 2px solid #27b347; /* Change from dashed to solid to imply image existence */
+  border-radius: 0.25rem;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+}
+
+#image-tip {
+  display: block; /* Changed from none */
+  text-align: center;
+  font-size: 14px;
+  color: #f2f2f2;
+  background-color: #46cd65;
+  padding: 8px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
 .form-group {
   position: relative;
   margin-bottom: 1rem;
@@ -59,9 +83,3 @@
   max-width: 600px;
   margin: 20px auto;
 }
-/* 
-@media (max-width: 640px) {
-  #upload-form {
-    width: calc(100% - 40px);
-  }
-} */

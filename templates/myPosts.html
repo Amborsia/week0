@@ -96,7 +96,7 @@
             <div class="post-body flex flex-col justify-between p-4 leading-normal">
                 <div>
                     <h5 class="post-title text-xl font-bold mb-2">{{ post.title }}</h5>
-                    <p class="post-date text-gray-600 text-xs">{{ post.created_at }}</p>
+                    <p class="post-date text-gray-600 text-xs">{{ post.date }}</p>
                 </div>
                 <div class="post-actions mt-4 flex items-center">
                     <button class="edit-button bg-blue-500 text-white font-bold py-1 px-4 rounded-l">
@@ -107,7 +107,7 @@
                     </button>
                 </div>
             </div>
-            {% if not post.status %}
+            {% if post.status == False %}
             <div class="post-status">마감됨</div>
             {% endif %}
         </div>
@@ -132,12 +132,14 @@
                 // 포스트가 이미 마감된 경우, 클릭 이벤트를 무시합니다.
                 return;
             }
-            var post_id = $(this).closest('.post-container').attr('id');
+            let date = $(this).closest('.post-container').find('.post-date').text();
             $.ajax({
                 type: 'POST',
                 url: `/posts/complete`,
                 contentType: 'application/json',
-                data: JSON.stringify({ post_id: post_id }),
+                data: JSON.stringify({
+                    date: date
+                }),
                 processData: false,
                 success: function (response) {
                     if (response['result'] == 'success') {
