@@ -33,7 +33,32 @@ def test():
 
 @app.route('/my-posts')
 def my_posts():
-    return render_template('myPosts.html')
+    posts = [
+        {'post_id' : 1,
+            'title': '첫 번째 게시글',
+            'content': '첫 번째 게시글 내용입니다.',
+            'created_at': '2020-10-01',
+            'image_url': 'https://images.unsplash.com/photo-1708748513828-2227f6d39c04?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'status': False
+        },
+        {
+            'post_id' : 2,
+            'title': '두 번째 게시글',
+            'content': '두 번째 게시글 내용입니다.',
+            'created_at': '2020-10-02',
+            'image_url': 'https://images.unsplash.com/photo-1707667786496-697ebfd08979?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'status': True
+        },
+        {
+            'post_id' : 3,
+            'title': '세 번째 게시글',
+            'content': '세 번째 게시글 내용입니다.',
+            'created_at': '2020-10-03',
+            'image_url': 'https://images.unsplash.com/photo-1707343843437-caacff5cfa74?q=80&w=1675&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            'status': True
+        }
+    ]
+    return render_template('myPosts.html', posts=posts)
 
 @app.route('/posts')
 def main():

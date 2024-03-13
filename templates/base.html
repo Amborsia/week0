@@ -20,25 +20,16 @@
 </head>
 
 <body>
-    <header>
-        {% block header %}
-        {% endblock %}
-    </header>
-
-    <nav>
-        {% block nav %}
-        {% endblock %}
-    </nav>
-
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
-
-    <footer>
-        {% block footer %}
-        {% endblock %}
-    </footer>
+    <div class="wrapper">
+        <header>
+            {% block header %}
+            {% endblock %}
+        </header>
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
 </body>
 
 </html>
