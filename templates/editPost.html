@@ -5,18 +5,17 @@
 {% endblock %}
 
 {% block content %}
-<div class="w-full border-b-2 px-2 py-3 flex justify-between">
-    <div class="flex items-center gap-2">
-
-        <a href="/posts" class="inline-block"><i class="fa-solid fa-angle-left"></i></a>
-        <h2>글 수정</h2>
+<div class="w-full border-b-2 px-2 py-5 flex justify-between rounded-b-lg border-b-2 border-green-400">
+    <div class="flex items-center gap-2 text-xl px-4">
+        <a href="/posts" class="inline-block mr-2"><i class="fa-solid fa-angle-left"></i></a>
+        <h2>글 작성하기</h2>
     </div>
 </div>
 <div class="flex items-center max-h-screen flex-col">
     <form id="upload-form" action="/edit/{{post.date}}" method="post" enctype="multipart/form-data"
         class="w-full mx-auto">
         <label id="image-upload-container"
-            style="cursor: pointer; border: 2px solid #27B347; height: 350px; width: 350px; display: block; margin: auto; align-items: center; justify-content: center; position: relative; background-size: cover; background-position: center; background-image: url('{{ post.image_url }}');">
+            style="cursor: pointer; border: 2px solid #27B347; height: 350px; width: 350px; display: block; margin: auto; align-items: center; justify-content: center; position: relative; background-size: cover; background-position: center; background-image: url('/{{ post.image_url }}');">
             <input type="file" name="savefile" id="image-input" style="display: none;" onchange="previewImage();">
             <i class="fa-regular fa-image text-6xl text-gray-400"
                 style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: none;"></i>
@@ -85,14 +84,38 @@
                 contentType: false,
                 processData: false,
                 success: function (response) {
-                    Swal.fire('Success', 'The file has been uploaded successfully', 'success');
+                    if (response.result !== 'success') {
+                        Swal.fire({
+                            title: '에러!',
+                            text: '에러가 발생했습니다. <br/>다시 시도해주세요.',
+                            icon: 'error',
+                            confirmButtonText: '다시 시도'
+                        });
+                        return;
+                    }
+                    Swal.fire({
+                        title: 'Success',
+                        text: '성공적으로 수정하였습니다!',
+                        icon: 'success',
+                        confirmButtonText: '확인'
+                    }).then((result) => {
+                        if (result.value) {
+                            window.location.href = '/posts';
+                        }
+                    });
                 },
                 error: function (error) {
-                    Swal.fire('Error', 'An error occurred during the upload', 'error');
+                    Swal.fire({
+                        title: '에러!',
+                        text: '에러가 발생했습니다. 다시 시도해주세요.',
+                        icon: 'error',
+                        confirmButtonText: '다시 시도'
+                    });
                 }
             });
         });
     });
+
 
 </script>
 {% endblock %}

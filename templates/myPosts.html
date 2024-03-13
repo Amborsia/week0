@@ -19,6 +19,29 @@
         opacity: 0.6;
     }
 
+    .empty-post-container {
+        background-color: white;
+
+        border-radius: 20px;
+
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+        margin-top: 50px;
+
+        margin-bottom: 50px;
+
+    }
+
+    .empty-post-container a {
+        display: inline-block;
+        background-image: linear-gradient(45deg, rgb(55, 178, 28), #41c441);
+        padding: 10px 30px;
+        color: white !important;
+        border-radius: 30px;
+        box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
     .post-status {
         position: absolute;
         top: 0;
@@ -82,16 +105,19 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8 relative border-2">
-    <a href="/posts"
-        class="fixed top-0 w-full h-16 left-0 px-4 text-gray-700 bg-white text-xl font-semibold flex items-center border-b-2 border-green-400 rounded-b-md shadow-md">
+<div class="w-full py-3 px-2 flex justify-between ">
+    <a href="/posts" style="max-width: 592px;"
+        class="w-full h-16 px-4 text-gray-700 bg-white text-xl font-semibold flex items-center border-b-2 border-green-400 rounded-b-md shadow-md">
         <i class="fa-solid fa-angle-left mr-2"></i> 내 글 목록
     </a>
-    <div class="mt-5 py-4">
+</div>
+<div class="w-full mx-auto relative px-2">
+    {% if posts %}
+    <div>
         {% for post in posts %}
-        <div class="post-container relative flex bg-white rounded-lg overflow-hidden shadow-lg my-4 {{ 'inactive' if not post.status }}"
+        <div class="post-container relative flex bg-white rounded-lg overflow-hidden shadow-md my-4 {{ 'inactive' if post.status == False }}"
             id="{{ post.post_id }}">
-            <div class="post-image w-32 h-32 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden"
+            <div class="post-image w-32 h-32 flex-none bg-cover bg-center rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden"
                 style="background-image: url('{{ post.image_url }}');" title="{{ post.title }}"></div>
             <div class="post-body flex flex-col justify-between p-4 leading-normal">
                 <div>
@@ -99,7 +125,7 @@
                     <p class="post-date text-gray-600 text-xs">{{ post.date }}</p>
                 </div>
                 <div class="post-actions mt-4 flex items-center">
-                    <button class="edit-button bg-blue-500 text-white font-bold py-1 px-4 rounded-l">
+                    <button id="{{post.date}}" class="edit-button bg-blue-500 text-white font-bold py-1 px-4 rounded-l">
                         수정
                     </button>
                     <button class="complete-button bg-green-500 text-white font-bold py-1 px-4 rounded-r">
@@ -111,7 +137,18 @@
             <div class="post-status">마감됨</div>
             {% endif %}
         </div>
+
         {% endfor %}
+        {% else %}
+        <div class="empty-post-container text-center py-10 mx-4 md:mx-10 lg:mx-20 xl:mx-40">
+            <h3 class="text-xl md:text-2xl lg:text-3xl text-gray-800 font-semibold mb-4">작성한 글이 없습니다.</h3>
+            <a href="/posts/create"
+                class="inline-flex items-center justify-center text-white font-bold py-2 px-4 rounded transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105 bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg">
+                <i class="fa-solid fa-pen mr-2"></i>글 작성하러 가기
+            </a>
+        </div>
+        {% endif %}
+
 
     </div>
 </div>
@@ -119,17 +156,23 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        // 마감 처리된 포스트의 버튼 클릭 이벤트 처리
         $('.inactive .edit-button, .inactive .complete-button').click(function (event) {
-            event.preventDefault(); // 기본 동작 방지
-            event.stopPropagation(); // 이벤트 전파 방지
-            // 여기에 마감된 포스트에 대한 피드백을 사용자에게 제공할 수 있습니다.
-            console.log('This post is already completed.');
+            event.preventDefault();
+            event.stopPropagation();
+            Swal.fire('이미 완료된 포스트입니다.', '', 'info');
+        });
+
+        $('.edit-button').click(function () {
+            if ($(this).closest('.post-container').hasClass('inactive')) {
+                Swal.fire('이미 완료된 포스트입니다.', '', 'info');
+                return;
+            }
+            let postDate = $(this).attr('id');
+            window.location.href = `/edit/${postDate}`;
         });
 
         $('.complete-button').click(function () {
             if ($(this).closest('.post-container').hasClass('inactive')) {
-                // 포스트가 이미 마감된 경우, 클릭 이벤트를 무시합니다.
                 return;
             }
             let date = $(this).closest('.post-container').find('.post-date').text();
@@ -137,18 +180,26 @@
                 type: 'POST',
                 url: `/posts/complete`,
                 contentType: 'application/json',
-                data: JSON.stringify({
-                    date: date
-                }),
+                data: JSON.stringify({ date: date }),
                 processData: false,
                 success: function (response) {
                     if (response['result'] == 'success') {
-                        // 포스트 상태 업데이트 or 페이지 새로고침 등의 처리
-                        window.location.reload();
+                        Swal.fire({
+                            title: '성공!',
+                            text: '포스트가 성공적으로 완료되었습니다.',
+                            icon: 'success',
+                            confirmButtonText: '확인'
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location.reload();
+                            }
+                        });
+                    } else {
+                        Swal.fire('오류', '처리 중 문제가 발생했습니다.', 'error');
                     }
                 },
                 error: function (error) {
-                    console.log('Error:', error);
+                    Swal.fire('오류', '포스트 완료 중 문제가 발생했습니다.', 'error');
                 }
             });
         });

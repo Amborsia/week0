@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
 
 {% block stylesheets %}
-{{ super() }} <!-- 이 부분은 base.html에서 정의한 기본 스타일을 유지합니다 -->
-<link rel="stylesheet" href="{{ url_for('static', filename='css/form.css') }}"> <!-- 여기에 추가 스타일시트를 넣습니다 -->
+{{ super() }}
+<link rel="stylesheet" href="../static/css/form.css">
 {% endblock %}
 
 {% block content %}
@@ -18,7 +17,7 @@
     </div>
 
     <div class="w-full mx-auto">
-        <form action="/login" method="POST" class="pt-6 pb-8 mb-4 space-y-6">
+        <form id="login-form" action="/login" method="POST" class="pt-6 pb-8 mb-4 space-y-6">
             <div class="relative">
                 <input type="text" id="username" name="username" placeholder=" "
                     class="form-input w-full py-2 border-b border-gray-300 text-gray-700 focus:outline-none focus:border-blue-500 peer">
@@ -33,7 +32,8 @@
             </div>
             <div class="flex items-center justify-between">
                 <button type="submit"
-                    class="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:shadow-outline">
+                    class="w-full text-white text-xl font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline tracking-widest"
+                    style="background-image: linear-gradient(to right, #124B1E, #27B347); ">
                     로그인
                 </button>
             </div>
@@ -41,8 +41,9 @@
     </div>
 
     <div class="w-full flex items-center justify-between">
-        <a href="/passwordforget" class="text-blue-500">비밀번호 찾기</a>
-        <a href="/signup" class="text-blue-500 ">회원가입</a>
+        <a href="/passwordforget">비밀번호 찾기</a>
+        <a href="/register">회원가입</a>
     </div>
 </div>
+<script src="../static/js/login.js"></script>
 {% endblock %}

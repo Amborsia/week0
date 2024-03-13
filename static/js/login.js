@@ -1,11 +1,8 @@
-document.addEventListener('DOMContentLoaded', function () {
-  // 폼 제출 이벤트 핸들러
-  const form = document.getElementById('login-form')
-  form.addEventListener('submit', function (event) {
+$(document).ready(function () {
+  $('#login-form').on('submit', function (event) {
     event.preventDefault()
-    const username = document.getElementById('username').value
-    const password = document.getElementById('password').value
-    // AJAX 사용하여 서버에 데이터 전송
+    const username = $('#username').val()
+    const password = $('#password').val()
     $.ajax({
       url: 'api/login',
       type: 'POST',
@@ -25,23 +22,27 @@ document.addEventListener('DOMContentLoaded', function () {
           })
           return
         }
-        // cookie에 저장
+        // 로그인 성공: 사용자가 '확인'을 클릭하면 /posts 페이지로 리디렉션
         Swal.fire({
           title: 'Success',
           text: '로그인 완료되었습니다.',
           icon: 'success',
           confirmButtonText: '확인'
+        }).then(result => {
+          if (result.value) {
+            window.location.href = '/posts'
+          }
         })
       },
       error: function (error) {
         console.error('Error:', error)
         Swal.fire({
           title: 'Error',
-          text: '회원가입 중 오류가 발생했습니다.',
+          text: '로그인 중 오류가 발생했습니다.',
           icon: 'error',
           confirmButtonText: '다시 시도'
         })
       }
-    }) // AJAX call 닫음
-  }) // form eventListener 닫음
-}) // DOMContentLoaded eventListener 닫음
+    })
+  })
+})
