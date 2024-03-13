@@ -1,106 +1,156 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
-
 {% block stylesheets %}
 {{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/createPost.css') }}"> <!-- 여기에 추가 스타일시트를 넣습니다 -->
+<style>
+    .post-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 8px;
+        background-color: #FFF;
+        border-radius: 10px;
+        border-top: 3px solid #27B347;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-container.inactive {
+        opacity: 0.6;
+    }
+
+    .post-status {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 8px;
+        font-size: 16px;
+        font-weight: 500;
+        border-bottom-left-radius: 10px;
+    }
+
+    .post-image {
+        min-width: 90px;
+        height: 90px;
+        border-radius: 10px;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .post-body {
+        flex: 1;
+    }
+
+    .post-title {
+        margin-bottom: 5px;
+        font-size: 18px;
+        color: #333;
+    }
+
+    .post-date {
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .edit-button,
+    .complete-button {
+        padding: 8px 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .edit-button {
+        margin-right: 10px;
+    }
+
+    .complete-button {
+        margin-left: 10px;
+    }
+
+    .inactive .edit-button,
+    .inactive .complete-button {
+        background-color: #cccccc;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="w-full border-b-2 px-2 py-3 flex justify-between">
-    <div class="flex items-center gap-2">
-        <a href="/posts" class="inline-block"><i class="fa-solid fa-angle-left"></i></a>
-        <h2>글 작성</h2>
+<div class="container mx-auto px-4 py-8 relative border-2">
+    <a href="/posts"
+        class="fixed top-0 w-full h-16 left-0 px-4 text-gray-700 bg-white text-xl font-semibold flex items-center border-b-2 border-green-400 rounded-b-md shadow-md">
+        <i class="fa-solid fa-angle-left mr-2"></i> 내 글 목록
+    </a>
+    <div class="mt-5 py-4">
+        {% for post in posts %}
+        <div class="post-container relative flex bg-white rounded-lg overflow-hidden shadow-lg my-4 {{ 'inactive' if not post.status }}"
+            id="{{ post.post_id }}">
+            <div class="post-image w-32 h-32 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden"
+                style="background-image: url('{{ post.image_url }}');" title="{{ post.title }}"></div>
+            <div class="post-body flex flex-col justify-between p-4 leading-normal">
+                <div>
+                    <h5 class="post-title text-xl font-bold mb-2">{{ post.title }}</h5>
+                    <p class="post-date text-gray-600 text-xs">{{ post.created_at }}</p>
+                </div>
+                <div class="post-actions mt-4 flex items-center">
+                    <button class="edit-button bg-blue-500 text-white font-bold py-1 px-4 rounded-l">
+                        수정
+                    </button>
+                    <button class="complete-button bg-green-500 text-white font-bold py-1 px-4 rounded-r">
+                        완료
+                    </button>
+                </div>
+            </div>
+            {% if not post.status %}
+            <div class="post-status">마감됨</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
     </div>
-    <button>올리기</button>
 </div>
-<div class="flex items-center max-h-screen flex-col">
-    <form id="upload-form" action="http://127.0.0.1:5000/write" method="post" enctype="multipart/form-data"
-        class="w-full mx-auto"> <!-- max-w-sm and mx-auto classes added -->
-        <label id="image-upload-container"
-            style="cursor: pointer; border: 2px dashed #ccc; height: 350px; width: 350px; display: block; margin: auto; align-items: center; justify-content: center; position: relative; background-size: cover; background-position: center;">
-            <input type="file" name="savefile" id="image-input" style="display: none;" onchange="previewImage();">
-            <i class="fa-regular fa-image text-6xl text-gray-400"
-                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"></i>
-        </label>
 
-        <div id="image-tip" class="my-4" style="text-align: center; display: none;">
-            <span class="text-sm"
-                style="font-size: 14px; color: #f2f2f2; display: inline-block; background-color: #46cd65; padding: 8px; border-radius: 8px;">
-                <strong>Tip:</strong> 사진이 정사각형이면 좋아요! 아니라면 물체가 가운데오게끔 사진을 올려주세요.
-            </span>
-        </div>
-
-
-        <div class="flex flex-col gap-4 px-0 p-4">
-            <div class="relative">
-                <input id="post_title" class="form-input p-2 w-full" type="text" name="post_title" placeholder=" "
-                    required>
-                <label for="post_title"
-                    class="form-label absolute left-0 -top-3.5 text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm">제목을
-                    입력해주세요</label>
-            </div>
-            <div class="relative">
-                <textarea id="post_description" class="form-input p-2 py-3 w-full h-16" name="post_description"
-                    maxlength="85" placeholder=" " required></textarea>
-                <label for="post_description"
-                    class="form-label absolute left-0 -top-3.5 text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-2 peer-focus:-top-3.5 peer-focus:text-blue-500 peer-focus:text-sm">간단한
-                    설명을 덧붙여주세요 (85자 제한)</label>
-            </div>
-        </div>
-        <div style="text-align: center; margin-top: 20px;">
-            <button type="submit"
-                class="bg-green-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                업로드</button>
-        </div>
-
-    </form>
-</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function previewImage() {
-        var file = $('#image-input').prop('files')[0];
-        var reader = new FileReader();
-        reader.onloadend = function () {
-            $('#image-upload-container').css({
-                'background-image': 'url(' + reader.result + ')',
-                'border': '2px solid #27B347'
-            });
-            $('#image-upload-container .fa-image').hide(); // Hide the upload icon when image is selected
-            $('#image-tip').show(); // Show the tip when image is selected
-        };
-        if (file) {
-            reader.readAsDataURL(file);
-        } else {
-            $('#image-upload-container').css({
-                'background-image': '', // Reset background image
-                'border': '2px dashed #ccc' // Reset the border to original style when no image is selected
-            });
-            $('#image-upload-container .fa-image').show(); // Show the upload icon again
-            $('#image-tip').hide(); // Hide the tip when no image is selected
-        }
-    }
-
     $(document).ready(function () {
-        $('#upload-form').submit(function (e) {
-            e.preventDefault();
-            var formData = new FormData(this);
+        // 마감 처리된 포스트의 버튼 클릭 이벤트 처리
+        $('.inactive .edit-button, .inactive .complete-button').click(function (event) {
+            event.preventDefault(); // 기본 동작 방지
+            event.stopPropagation(); // 이벤트 전파 방지
+            // 여기에 마감된 포스트에 대한 피드백을 사용자에게 제공할 수 있습니다.
+            console.log('This post is already completed.');
+        });
+
+        $('.complete-button').click(function () {
+            if ($(this).closest('.post-container').hasClass('inactive')) {
+                // 포스트가 이미 마감된 경우, 클릭 이벤트를 무시합니다.
+                return;
+            }
+            var post_id = $(this).closest('.post-container').attr('id');
             $.ajax({
-                url: $(this).attr('action'),
                 type: 'POST',
-                data: formData,
-                contentType: false,
+                url: `/posts/complete`,
+                contentType: 'application/json',
+                data: JSON.stringify({ post_id: post_id }),
                 processData: false,
                 success: function (response) {
-                    Swal.fire('Success', 'The file has been uploaded successfully', 'success');
+                    if (response['result'] == 'success') {
+                        // 포스트 상태 업데이트 or 페이지 새로고침 등의 처리
+                        window.location.reload();
+                    }
                 },
                 error: function (error) {
-                    Swal.fire('Error', 'An error occurred during the upload', 'error');
+                    console.log('Error:', error);
                 }
             });
         });
     });
-
 </script>
+
 {% endblock %}
