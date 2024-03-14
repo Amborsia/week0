@@ -51,6 +51,15 @@ $(document).ready(function () {
         pw_give: password
       }),
       success: function (data) {
+        if (data.result === 'fail') {
+          Swal.fire({
+            title: 'Error',
+            text: '에러입니다.',
+            icon: 'error',
+            confirmButtonText: '다시 시도'
+          })
+          return
+        }
         Swal.fire({
           title: 'Success',
           text: '회원가입이 완료되었습니다.',
