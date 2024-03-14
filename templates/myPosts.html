@@ -185,8 +185,8 @@
                 success: function (response) {
                     if (response['result'] == 'success') {
                         Swal.fire({
-                            title: '성공!',
-                            text: '포스트가 성공적으로 완료되었습니다.',
+                            title: '완료!',
+                            text: '글이 완료처리 되었습니다.',
                             icon: 'success',
                             confirmButtonText: '확인'
                         }).then((result) => {
@@ -199,7 +199,7 @@
                     }
                 },
                 error: function (error) {
-                    Swal.fire('오류', '포스트 완료 중 문제가 발생했습니다.', 'error');
+                    Swal.fire('오류', '에러가 발생했습니다.', 'error');
                 }
             });
         });
