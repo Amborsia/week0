@@ -125,6 +125,34 @@ def api_login():
         return jsonify({'result' : 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
 
+@app.route('/logout', methods=['POST'])
+def logout():
+    token = request.cookies.get('token')
+    try:
+        jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        resp = jsonify({'result': 'success', 'msg': '로그아웃이 완료되었습니다'})
+        resp.set_cookie('token', '', expires=0)
+        return resp
+    except jwt.ExpiredSignatureError:
+        return jsonify({'result': 'fail1', 'msg': '로그인 시간이 만료되었습니다.'}), 401
+    except jwt.exceptions.DecodeError:
+        return jsonify({'result': 'fail2', 'msg': '로그인 정보가 존재하지 않습니다.'}), 401
+# @app.route('/logout', methods=['POST'])
+# def logout():
+#     token = request.cookies.get('token')
+#     try:
+#         #token을 시크릿키로 디코딩
+#         jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+#         resp = jsonify({'result':'success', 'msg':'로그아웃이 완료되었습니다'})
+#         resp = resp.set_cookie('token', '')
+#         return resp
+#     # token이 만료되었을 시
+#     except jwt.ExpiredSignatureError:
+#         resp = jsonify({'result':'fail1', 'msg' : '로그인 시간이 만료되었습니다.'})
+#         return resp
+#     except jwt.exceptions.DecodeError:
+#         resp = jsonify({'result':'fail2','msg' : '로그인 정보가 존재하지 않습니다.'})
+#         return resp
 # 회원가입 - 완료
 @app.route('/api/signup', methods=['POST'])
 def api_register():
