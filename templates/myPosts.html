@@ -105,11 +105,12 @@
 {% endblock %}
 
 {% block content %}
-<div class="w-full py-3 px-2 flex justify-between ">
-    <a href="/posts" style="max-width: 592px;"
-        class="w-full h-16 px-4 text-gray-700 bg-white text-xl font-semibold flex items-center border-b-2 border-green-400 rounded-b-md shadow-md">
+<div
+    class="w-full py-3 px-2 flex justify-between h-16 px-4 text-gray-700 bg-white text-xl font-semibold items-center border-b-2 border-green-400 rounded-b-md shadow-md">
+    <a href="/posts">
         <i class="fa-solid fa-angle-left mr-2"></i> 내 글 목록
     </a>
+    <button class="text-green-400">로그아웃</button>
 </div>
 <div class="w-full mx-auto relative px-2">
     {% if posts %}
@@ -203,7 +204,43 @@
                 }
             });
         });
+
+        // 로그아웃 버튼 클릭 이벤트
+        $('.text-green-400').click(function () {
+            $.ajax({
+                url: '/logout',
+                type: 'POST',
+                success: function (response) {
+                    if (response['result'] === 'success') {
+                        Swal.fire({
+                            title: '로그아웃 성공',
+                            text: '성공적으로 로그아웃되었습니다.',
+                            icon: 'success',
+                            confirmButtonText: '확인'
+                        }).then((result) => {
+                            if (result.value) {
+                                window.location.href = '/login';
+                            }
+                        });
+                    } else {
+                        Swal.fire({
+                            title: '오류',
+                            text: '로그아웃에 실패했습니다.',
+                            icon: 'error',
+                            confirmButtonText: '다시 시도'
+                        });
+                    }
+                },
+                error: function (error) {
+                    Swal.fire({
+                        title: '오류',
+                        text: '로그아웃 중 오류가 발생했습니다.',
+                        icon: 'error',
+                        confirmButtonText: '다시 시도'
+                    });
+                }
+            });
+        });
     });
 </script>
-
 {% endblock %}
