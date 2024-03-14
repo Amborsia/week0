@@ -32,15 +32,24 @@ def register():
 # EditPost - 완료
 @app.route('/edit-post/<dates>')
 def edit_post(dates):
-    user = db.write.find_one({"date":dates})
-    post = {
-        'title': user['title'],
-        'content': user['content'],
-        'date': user['date'],
-        'image_url': user['image_url'],
-        'status': True
-    }
-    return render_template('editPost.html', post=post)
+    token = request.cookies.get('token')
+    try:
+        jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        user = db.write.find_one({"date":dates})
+        post = {
+            'title': user['title'],
+            'content': user['content'],
+            'date': user['date'],
+            'image_url': user['image_url'],
+            'status': True
+        }
+        return render_template('editPost.html', post=post)
+    except jwt.ExpiredSignatureError:
+        return jsonify({'result': 'fail1', 'msg': '로그인 시간이 만료되었습니다.'}), 401
+    except jwt.exceptions.DecodeError:
+        return jsonify({'result': 'fail2', 'msg': '로그인 정보가 존재하지 않습니다.'}), 401
+    
+    
 
 # 전체 글 목록 보여주기
 @app.route('/posts')
@@ -65,7 +74,15 @@ def main():
     
 @app.route('/posts/create')
 def write():
-    return render_template('postCreate.html')
+    token = request.cookies.get('token')
+    try:
+        jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        return render_template('postCreate.html')
+    except jwt.ExpiredSignatureError:
+        return jsonify({'result': 'fail1', 'msg': '로그인 시간이 만료되었습니다.'}), 401
+    except jwt.exceptions.DecodeError:
+        return jsonify({'result': 'fail2', 'msg': '로그인 정보가 존재하지 않습니다.'}), 401
+    
 #내 글 목록 포스트 보여주는것 - 완료
 @app.route('/my-posts')
 def my_posts():
@@ -137,22 +154,7 @@ def logout():
         return jsonify({'result': 'fail1', 'msg': '로그인 시간이 만료되었습니다.'}), 401
     except jwt.exceptions.DecodeError:
         return jsonify({'result': 'fail2', 'msg': '로그인 정보가 존재하지 않습니다.'}), 401
-# @app.route('/logout', methods=['POST'])
-# def logout():
-#     token = request.cookies.get('token')
-#     try:
-#         #token을 시크릿키로 디코딩
-#         jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
-#         resp = jsonify({'result':'success', 'msg':'로그아웃이 완료되었습니다'})
-#         resp = resp.set_cookie('token', '')
-#         return resp
-#     # token이 만료되었을 시
-#     except jwt.ExpiredSignatureError:
-#         resp = jsonify({'result':'fail1', 'msg' : '로그인 시간이 만료되었습니다.'})
-#         return resp
-#     except jwt.exceptions.DecodeError:
-#         resp = jsonify({'result':'fail2','msg' : '로그인 정보가 존재하지 않습니다.'})
-#         return resp
+
 # 회원가입 - 완료
 @app.route('/api/signup', methods=['POST'])
 def api_register():
